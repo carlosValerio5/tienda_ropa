@@ -62,7 +62,7 @@ CREATE TABLE detalles_pedido(
 
 CREATE TABLE inventario(
     inventario_id SERIAL,
-    producto_id INT,
+    producto_id INT NOT NULL,
     cantidad BIGINT,
     fecha_actualizacion DATE,
     PRIMARY KEY (inventario_id),
