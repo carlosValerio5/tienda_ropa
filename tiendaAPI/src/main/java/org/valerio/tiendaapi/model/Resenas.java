@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+/**
+ * Guille
+ */
 @Entity
 @Table(name="reseñas")
 public class Resenas {

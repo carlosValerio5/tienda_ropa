@@ -3,6 +3,7 @@ package org.valerio.tiendaapi.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.valerio.tiendaapi.exceptions.CategoriaNotFoundException;
+import org.valerio.tiendaapi.exceptions.CategoriaYaExisteException;
 import org.valerio.tiendaapi.model.Categorias;
 import org.valerio.tiendaapi.repository.CategoriasRepository;
 
@@ -53,7 +54,10 @@ public class CategoriasService {
         throw new CategoriaNotFoundException("Categoria no encontrada");
     }
 
-    public Categorias addCategorias(Categorias categoria) {
+    public Categorias addCategorias(Categorias categoria) throws CategoriaYaExisteException {
+        if (categoriasRepository.findByCategoriaId(categoria.getCategoriaId()).isPresent()) {
+            throw new CategoriaYaExisteException("Categoria ya existe");
+        }
         if(categoria.getNombre() == null) {
             return null;
         }

@@ -8,7 +8,7 @@ public class Productos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer producto_id;
+    private Integer productoId;
     private String nombre;
     private String descripcion;
     private Double precio;
@@ -28,8 +28,8 @@ public class Productos {
     public Productos() {
     }
 
-    public Productos(Integer producto_id, String nombre, String descripcion, Double precio, String talla_id, String color_id, Long stock, String genero, Marcas marca, Categorias categorias) {
-        this.producto_id = producto_id;
+    public Productos(Integer productoId, String nombre, String descripcion, Double precio, String talla_id, String color_id, Long stock, String genero, Marcas marca, Categorias categorias) {
+        this.productoId = productoId;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
@@ -57,12 +57,12 @@ public class Productos {
         this.categorias = categorias;
     }
 
-    public Integer getProducto_id() {
-        return producto_id;
+    public Integer getProductoId() {
+        return productoId;
     }
 
-    public void setProducto_id(Integer producto_id) {
-        this.producto_id = producto_id;
+    public void setProductoId(Integer producto_id) {
+        this.productoId = producto_id;
     }
 
     public String getNombre() {

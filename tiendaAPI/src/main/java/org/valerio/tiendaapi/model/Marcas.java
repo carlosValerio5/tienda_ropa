@@ -2,6 +2,9 @@ package org.valerio.tiendaapi.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Guille
+ */
 @Entity
 @Table(name="marcas")
 public class Marcas {

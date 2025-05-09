@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.valerio.tiendaapi.exceptions.CategoriaNotFoundException;
+import org.valerio.tiendaapi.exceptions.CategoriaYaExisteException;
 import org.valerio.tiendaapi.model.Categorias;
 import org.valerio.tiendaapi.service.CategoriasService;
 
@@ -35,7 +36,12 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<Categorias> addCategoria(@RequestBody Categorias categorias) {
-        Categorias addedCategoria = categoriasService.addCategorias(categorias);
+        Categorias addedCategoria;
+        try {
+            addedCategoria = categoriasService.addCategorias(categorias);
+        }catch (CategoriaYaExisteException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         if (addedCategoria != null) {
             return new ResponseEntity<>(addedCategoria, HttpStatus.CREATED);
         }
