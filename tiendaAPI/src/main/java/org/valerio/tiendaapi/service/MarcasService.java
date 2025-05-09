@@ -18,7 +18,7 @@ public class MarcasService {
     }
 
     public Marcas getMarcaById(Integer id) {
-        return marcasRepository.findById(id);
+        return marcasRepository.findById(id).orElse(null);
     }
 
     public Marcas createMarca(Marcas marca) {

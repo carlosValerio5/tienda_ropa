@@ -13,7 +13,7 @@ import org.valerio.tiendaapi.service.MarcasService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/v1/categoria")
+@RequestMapping(path="api/v1/marca")
 public class MarcasController {
     @Autowired
     private MarcasService marcasService;

@@ -87,5 +87,19 @@ public class InventarioController {
         return new ResponseEntity<>(updated, HttpStatus.OK);
 
     }
+
+    @DeleteMapping("/{inventarioId}")
+    public ResponseEntity<Inventario> deleteInventario(@PathVariable Integer inventarioId) {
+
+        Inventario deleted;
+
+        try{
+            deleted = inventarioService.deleteInventario(inventarioId);
+        }catch(InventarioNoEncontradoException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
+    }
 }
 

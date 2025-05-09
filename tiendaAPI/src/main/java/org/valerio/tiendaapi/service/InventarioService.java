@@ -64,8 +64,8 @@ public class InventarioService {
         throw new InventarioNoEncontradoException("No existe este inventario");
     }
 
-    public Inventario deleteInventario(Inventario inventario) throws InventarioNoEncontradoException {
-        Optional<Inventario> inventarioBusqueda = inventarioRepository.findByInventarioId(inventario.getInventarioId());
+    public Inventario deleteInventario(Integer inventarioId) throws InventarioNoEncontradoException {
+        Optional<Inventario> inventarioBusqueda = inventarioRepository.findByInventarioId(inventarioId);
         if (inventarioBusqueda.isPresent()) {
             Inventario inventarioToDelete = inventarioBusqueda.get();
             inventarioRepository.delete(inventarioToDelete);
