@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Categorias {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer categoria_id;
+    private Integer categoriaId;
 
     @Column(unique = true)
     private String nombre;
@@ -15,17 +15,21 @@ public class Categorias {
     public Categorias() {
     }
 
-    public Categorias(Integer categoria_id, String nombre) {
-        this.categoria_id = categoria_id;
+    public Categorias(Integer categoriaId, String nombre) {
+        this.categoriaId = categoriaId;
         this.nombre = nombre;
     }
 
-    public Integer getCategoria_id() {
-        return categoria_id;
+    public Categorias(Integer categoriaId) {
+        this.categoriaId = categoriaId;
     }
 
-    public void setCategoria_id(Integer categoria_id) {
-        this.categoria_id = categoria_id;
+    public Integer getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(Integer categoria_id) {
+        this.categoriaId = categoria_id;
     }
 
     public String getNombre() {
