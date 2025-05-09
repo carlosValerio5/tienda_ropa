@@ -40,4 +40,29 @@ public class ClientesController {
         Clientes createdCliente = clientesService.addCliente(cliente);
         return new ResponseEntity<>(createdCliente, HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{cliente_id}")
+    public ResponseEntity<Clientes> deleteClientes(@PathVariable Integer cliente_id) {
+        Clientes cliente = clientesService.deleteCliente(cliente_id);
+        if (cliente != null) {
+            return new ResponseEntity<>(cliente, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+    //Tiene que agregar el id en el cuerpo de la request para que funcione
+    @PutMapping
+    public ResponseEntity<Clientes> updateClientes(@RequestBody Clientes cliente) {
+
+        if(cliente.getCliente_id() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Clientes updatedCliente = clientesService.updateCliente(cliente);
+        if(updatedCliente != null) {
+            return new ResponseEntity<>(updatedCliente, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

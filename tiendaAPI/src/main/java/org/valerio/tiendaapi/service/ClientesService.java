@@ -56,5 +56,12 @@ public class ClientesService {
         return cliente;
     }
 
+    public Clientes deleteCliente(Integer id){
+        Clientes clienteToDelete = clientesRepository.findById(id).orElse(null);
+        if(clienteToDelete != null){
+            clientesRepository.delete(clienteToDelete);
+        }
+        return clienteToDelete;
+    }
 
 }

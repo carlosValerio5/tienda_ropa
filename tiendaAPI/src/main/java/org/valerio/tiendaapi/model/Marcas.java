@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Marcas {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer marca_id;
 
     @Column(unique=true)

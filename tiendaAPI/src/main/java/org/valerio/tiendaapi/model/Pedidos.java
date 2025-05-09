@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class Pedidos {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pedido_id;
 
     @Column(columnDefinition = "DATE")

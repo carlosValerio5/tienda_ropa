@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class DetallesPedido {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer detalle_id;
     private Integer cantidad;
     private Double precio_unitario;

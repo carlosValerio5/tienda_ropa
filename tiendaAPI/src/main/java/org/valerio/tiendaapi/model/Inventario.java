@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class Inventario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inventario_id;
     private Long cantidad;
 

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class Resenas {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer resena_id;
     private Integer calificacion;
     private String comentario;

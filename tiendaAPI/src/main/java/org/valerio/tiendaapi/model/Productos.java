@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Productos {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer producto_id;
     private String nombre;
     private String descripcion;

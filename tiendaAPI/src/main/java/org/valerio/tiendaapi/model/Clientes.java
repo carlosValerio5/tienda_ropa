@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class Clientes {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cliente_id;
     private String nombre;
     private String apellido;
