@@ -13,7 +13,7 @@ import org.valerio.tiendaapi.service.MarcasService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/v1/marca")
+@RequestMapping(path="api/v1/marcas")
 public class MarcasController {
     @Autowired
     private MarcasService marcasService;
@@ -26,14 +26,14 @@ public class MarcasController {
     @GetMapping("/{marca_id}")
     public ResponseEntity<Marcas> getMarcaById(@PathVariable Integer marca_id) {
         Marcas marca = marcasService.getMarcaById(marca_id);
-        return ResponseEntity.ok(marca); // Devuelve 200 OK
+        return  marca != null ? ResponseEntity.ok(marca) : ResponseEntity.notFound().build();
     }
 
     // POST /api/marcas → Crear nueva marca
     @PostMapping
     public ResponseEntity<Marcas> createMarca(@RequestBody Marcas marca) {
         Marcas nuevaMarca = marcasService.createMarca(marca);
-        return new ResponseEntity<>(nuevaMarca, HttpStatus.CREATED); // 201 Created
+        return new ResponseEntity<>(nuevaMarca, HttpStatus.CREATED);
     }
 
     // PUT /api/marcas/{id} → Actualizar marca

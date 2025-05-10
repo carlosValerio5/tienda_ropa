@@ -18,7 +18,8 @@ public class MarcasService {
     }
 
     public Marcas getMarcaById(Integer id) {
-        return marcasRepository.findById(id).orElse(null);
+        return marcasRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Marca no encontrada"));
     }
 
     public Marcas createMarca(Marcas marca) {

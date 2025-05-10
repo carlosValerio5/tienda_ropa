@@ -3,6 +3,8 @@ package org.valerio.tiendaapi.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Guille
@@ -24,8 +26,16 @@ public class Pedidos {
     @JoinColumn(name="cliente_id")
     private Clientes cliente;
 
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetallesPedido> detalles = new ArrayList<>();
+
+
+
     public Pedidos() {
     }
+
+
+
 
     public Pedidos(Integer pedido_id, LocalDate fecha_pedido, String estado_pedido, Double total, Clientes cliente) {
         this.pedido_id = pedido_id;
@@ -33,6 +43,14 @@ public class Pedidos {
         this.estado_pedido = estado_pedido;
         this.total = total;
         this.cliente = cliente;
+    }
+
+    public List<DetallesPedido> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetallesPedido> detalles) {
+        this.detalles = detalles;
     }
 
     public Integer getPedido_id() {
