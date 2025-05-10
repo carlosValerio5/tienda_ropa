@@ -109,4 +109,82 @@ AS
     SELECT prod.nombre, dp.cantidad, c.nombre as nombre_cliente, prod.precio, ped.total FROM detalles_pedido dp
     JOIN productos prod on dp.producto_id = prod.producto_id
     JOIN pedidos ped ON dp.pedido_id = ped.pedido_id
-    JOIN clientes c on ped.cliente_id = c.cliente_id
+    JOIN clientes c on ped.cliente_id = c.cliente_id;
+
+
+-- Esta funcion simplemente concatena el nombre y apellido para un cliente en especifico.
+CREATE FUNCTION get_cliente_nombre_completo(cliente_id INT)
+    RETURNS TEXT AS $$
+SELECT nombre || ' ' || apellido FROM clientes WHERE clientes.cliente_id = $1;
+$$ LANGUAGE SQL;
+
+/* Funcion para obtener el stock de un producto en especifico
+   Cabe recalcar que por el momento un producto puede tener distintos inventarios
+   por el momento (sujeto a cambios) por lo tanto esta funcion suma todas las
+   cantidades de los diferentes inventarios para cada producto.
+   */
+CREATE FUNCTION get_stock_producto(prod_id INT)
+RETURNS BIGINT AS $$
+    SELECT COALESCE(SUM(cantidad),0) FROM inventario WHERE producto_id = $1
+$$ LANGUAGE SQL;
+
+
+-- Funcion para actualizar el inventario de un producto en especifico
+CREATE OR REPLACE PROCEDURE actualizar_inventario(
+    IN p_producto_id INT,
+    IN p_cantidad BIGINT
+)
+    LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO inventario(producto_id, cantidad, fecha_actualizacion)
+    VALUES (p_producto_id, p_cantidad, CURRENT_DATE);
+END;
+$$;
+
+
+
+/*
+Stored procedure, sirve para crear nuevas ordenes
+Params:
+    id del cliente
+    estado del pedido
+    productos a agregar a la orden -> array
+    cantidades de cada producto -> array
+
+Este procedure inserta primero los datos hacia una fila de la tabla pedidos
+despues inserta tambien a la tabla detalles pedidos y por ultimo calcula el total de la orden
+para poder actualizarlo en la tabla de pedidos
+
+*/
+CREATE OR REPLACE PROCEDURE crear_pedido(
+    IN p_cliente_id INT,
+    IN p_estado TEXT,
+    IN p_productos INT[],
+    IN p_cantidades INT[]
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    new_pedido_id INT;
+    total_pedido DOUBLE PRECISION := 0;
+    i INT := 1;
+    precio_unit DOUBLE PRECISION;
+BEGIN
+    INSERT INTO pedidos(cliente_id, fecha_pedido, estado_pedido, total)
+    VALUES (p_cliente_id, CURRENT_DATE, p_estado, 0)
+    RETURNING pedido_id INTO new_pedido_id;
+
+    WHILE i <= array_length(p_productos, 1) LOOP
+        SELECT precio INTO precio_unit FROM productos WHERE producto_id = p_productos[i];
+
+        INSERT INTO detalles_pedido(pedido_id, producto_id, cantidad, precio_unitario)
+        VALUES (new_pedido_id, p_productos[i], p_cantidades[i], precio_unit);
+
+        total_pedido := total_pedido + (precio_unit * p_cantidades[i]);
+        i := i + 1;
+    END LOOP;
+
+    UPDATE pedidos SET total = total_pedido WHERE pedido_id = new_pedido_id;
+END;
+$$
