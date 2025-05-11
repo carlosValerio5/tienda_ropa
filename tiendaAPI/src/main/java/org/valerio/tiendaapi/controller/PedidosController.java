@@ -30,7 +30,7 @@ public class PedidosController {
 
     }
 //Detalles pedido
-    @PostMapping("/{pedido:id}/detalles")
+    @PostMapping("/{pedido_id}/detalles")
     public ResponseEntity<DetallesPedido> agregarDetalle(
             @PathVariable Integer pedido_id,
             @RequestBody DetallesPedido detalle) {
