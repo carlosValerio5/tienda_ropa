@@ -82,8 +82,8 @@ public class PedidosService {
         return detallesPedidoRepository.save(detalle);
     }
 
-    public List<DetallesPedido> obtenerDetallesPorPedido(Integer pedidoId) {
-        return detallesPedidoRepository.findByPedidoPedidoId(pedidoId);
+    public List<DetallesPedido> obtenerDetallesPorPedido(DetallesPedido pedido) {
+        return detallesPedidoRepository.findByPedido(pedido);
     }
 
 }
