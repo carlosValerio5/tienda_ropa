@@ -13,7 +13,7 @@ import org.valerio.tiendaapi.service.PedidosService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pedidos")
+@RequestMapping("/api/v1/pedidos")
 public class PedidosController {
     @Autowired
     private PedidosService pedidosService;
