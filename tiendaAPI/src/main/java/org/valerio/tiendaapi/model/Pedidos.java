@@ -15,30 +15,44 @@ public class Pedidos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pedido_id;
+    private Integer pedidoId;
 
     @Column(columnDefinition = "DATE")
     private LocalDate fecha_pedido;
     private String estado_pedido;
     private Double total;
 
+    @Transient
+    private String clienteNombre;
+
     @ManyToOne
     @JoinColumn(name="cliente_id")
     private Clientes cliente;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @Transient
+    //@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetallesPedido> detalles = new ArrayList<>();
 
 
+    @PostLoad
+    public void postLoad() {
+        if (cliente != null) {
+            this.clienteNombre = cliente.getNombre();
+        }
+    }
 
     public Pedidos() {
     }
 
+    public Pedidos(Integer pedidoId){
+        this.pedidoId = pedidoId;
+    }
 
 
 
-    public Pedidos(Integer pedido_id, LocalDate fecha_pedido, String estado_pedido, Double total, Clientes cliente) {
-        this.pedido_id = pedido_id;
+    public Pedidos(Integer pedidoId, LocalDate fecha_pedido, String estado_pedido, Double total, Clientes cliente) {
+        this.pedidoId = pedidoId;
         this.fecha_pedido = fecha_pedido;
         this.estado_pedido = estado_pedido;
         this.total = total;
@@ -53,12 +67,12 @@ public class Pedidos {
         this.detalles = detalles;
     }
 
-    public Integer getPedido_id() {
-        return pedido_id;
+    public Integer getPedidoId() {
+        return pedidoId;
     }
 
-    public void setPedido_id(Integer pedido_id) {
-        this.pedido_id = pedido_id;
+    public void setPedidoId(Integer pedido_id) {
+        this.pedidoId = pedido_id;
     }
 
     public LocalDate getFecha_pedido() {

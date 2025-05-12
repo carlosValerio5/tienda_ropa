@@ -11,7 +11,7 @@ public class DetallesPedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer detalle_id;
+    private Integer detalleId;
     private Integer cantidad;
     private Double precio_unitario;
 
@@ -26,20 +26,20 @@ public class DetallesPedido {
 
     public DetallesPedido() {}
 
-    public DetallesPedido(Integer detalle_id, Integer cantidad, Double precio_unitario, Pedidos pedido, Productos producto) {
-        this.detalle_id = detalle_id;
+    public DetallesPedido(Integer detalleId, Integer cantidad, Double precio_unitario, Pedidos pedido, Productos producto) {
+        this.detalleId = detalleId;
         this.cantidad = cantidad;
         this.precio_unitario = precio_unitario;
         this.pedido = pedido;
         this.producto = producto;
     }
 
-    public Integer getDetalle_id() {
-        return detalle_id;
+    public Integer getDetalleId() {
+        return detalleId;
     }
 
-    public void setDetalle_id(Integer detalle_id) {
-        this.detalle_id = detalle_id;
+    public void setDetalleId(Integer detalle_id) {
+        this.detalleId = detalle_id;
     }
 
     public Integer getCantidad() {

@@ -1,5 +1,6 @@
 package org.valerio.tiendaapi.service;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.valerio.tiendaapi.exceptions.ClienteNoExisteExeption;
@@ -24,6 +25,17 @@ public class PedidosService {
     private ClientesRepository clientesRepository;
     @Autowired
     private DetallesPedidoRepository detallesPedidoRepository;
+    @Autowired
+    private DetallesPedidosService detallesPedidosService;
+
+    public void crearPedido(Integer idCliente, String pEstado, Integer[] pProductos, Integer[] pCantidades) {
+        try {
+            pedidosRepository.crearPedido(idCliente, pEstado, pProductos, pCantidades);
+        } catch (ConstraintViolationException e) {
+            throw new RuntimeException("Error al crear pedido", e);
+        }
+    }
+
 
     public Pedidos crearPedido(Pedidos pedido)throws ClienteNoExisteExeption {
         if (!clientesRepository.existsById(pedido.getCliente().getCliente_id())) {
@@ -82,8 +94,13 @@ public class PedidosService {
         return detallesPedidoRepository.save(detalle);
     }
 
-    public List<DetallesPedido> obtenerDetallesPorPedido(DetallesPedido pedido) {
+    public List<DetallesPedido> obtenerDetallesPorPedido(Pedidos pedido) {
         return detallesPedidoRepository.findByPedido(pedido);
     }
+
+    public List<Pedidos> getPedidos(){
+        return pedidosRepository.findAll();
+    }
+
 
 }
