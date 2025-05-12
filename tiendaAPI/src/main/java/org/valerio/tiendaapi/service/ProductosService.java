@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.valerio.tiendaapi.exceptions.ProductoNoEncontradoException;
 import org.valerio.tiendaapi.exceptions.ProductoYaExisteException;
+import org.valerio.tiendaapi.model.Categorias;
+import org.valerio.tiendaapi.model.Marcas;
 import org.valerio.tiendaapi.model.Productos;
+import org.valerio.tiendaapi.repository.CategoriasRepository;
+import org.valerio.tiendaapi.repository.MarcasRepository;
 import org.valerio.tiendaapi.repository.ProductosRepository;
 
 import java.util.List;
@@ -15,14 +19,27 @@ import java.util.stream.Collectors;
 public class ProductosService {
 
     private final ProductosRepository productosRepository;
+    private final MarcasRepository marcasRepository;
+    private final CategoriasRepository categoriasRepository;
 
     @Autowired
-    public ProductosService(ProductosRepository productosRepository) {
+    public ProductosService(ProductosRepository productosRepository, MarcasRepository marcasRepository, CategoriasRepository categoriasRepository) {
         this.productosRepository = productosRepository;
+        this.marcasRepository = marcasRepository;
+        this.categoriasRepository = categoriasRepository;
     }
 
     public List<Productos> getProductos() {
-        return productosRepository.findAll();
+        List<Productos> productos =  productosRepository.findAll();
+        for(Productos producto: productos) {
+            if(producto.getCategorias()!=null) {
+                producto.setCategoriaNombre(producto.getCategorias().getNombre());
+            }
+            if (producto.getMarca()!=null) {
+                producto.setMarcaNombre(producto.getMarca().getNombre());
+            }
+        }
+        return productos;
     }
 
     public Productos getById(Integer id) {
@@ -53,6 +70,16 @@ public class ProductosService {
             productoToUpdate.setDescripcion(producto.getDescripcion());
             productoToUpdate.setStock(producto.getStock());
             productoToUpdate.setGenero(producto.getGenero());
+            productoToUpdate.setColor_id(producto.getColor_id());
+            if(producto.getMarcaNombre()!=null) {
+                Optional<Marcas> marca = marcasRepository.findByNombre(producto.getMarcaNombre());
+                marca.ifPresent(productoToUpdate::setMarca);
+            }
+            if(producto.getCategoriaNombre()!=null) {
+                Optional<Categorias> categorias = categoriasRepository.findByNombre(producto.getCategoriaNombre());
+                categorias.ifPresent(productoToUpdate::setCategorias);
+            }
+
             return productosRepository.save(productoToUpdate);
         }
 

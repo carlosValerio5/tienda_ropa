@@ -18,6 +18,7 @@ import org.valerio.tiendaapi.service.ProductosService;
 import java.util.Collections;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/v1/productos")
 public class ProductosController {

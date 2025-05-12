@@ -17,6 +17,12 @@ public class Productos {
     private Long stock;
     private String genero;
 
+    @Transient
+    private String categoriaNombre;
+
+    @Transient
+    private String marcaNombre;
+
     @ManyToOne
     @JoinColumn(name="marca_id")
     private Marcas marca;
@@ -28,7 +34,8 @@ public class Productos {
     public Productos() {
     }
 
-    public Productos(Integer productoId, String nombre, String descripcion, Double precio, String talla_id, String color_id, Long stock, String genero, Marcas marca, Categorias categorias) {
+    public Productos(Integer productoId, String nombre, String descripcion, Double precio, String talla_id, String color_id,
+                     Long stock, String genero, Marcas marca, Categorias categorias, String categoriaNombre, String marcaNombre) {
         this.productoId = productoId;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -39,6 +46,24 @@ public class Productos {
         this.genero = genero;
         this.marca = marca;
         this.categorias = categorias;
+        this.categoriaNombre = categoriaNombre;
+        this.marcaNombre = marcaNombre;
+    }
+
+    public String getCategoriaNombre() {
+        return categoriaNombre;
+    }
+
+    public void setCategoriaNombre(String categoriaNombre) {
+        this.categoriaNombre = categoriaNombre;
+    }
+
+    public String getMarcaNombre() {
+        return marcaNombre;
+    }
+
+    public void setMarcaNombre(String marcaNombre) {
+        this.marcaNombre = marcaNombre;
     }
 
     public Marcas getMarca() {
