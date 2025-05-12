@@ -5,7 +5,7 @@ interface Producto {
     nombre: string;
     precio: number;
     stock: number;
-    talla_id?: string;
+    tallaId?: string;
     descripcion: string;
     genero: string;
     categoriaNombre: string;
@@ -60,7 +60,7 @@ const AgregarProducto = () => {
             nombre,
             precio,
             stock,
-            talla_id: talla,
+            tallaId: talla,
             descripcion: descripcionCompleta,
             genero,
             categoriaNombre: categoria,
@@ -116,7 +116,7 @@ const AgregarProducto = () => {
             nombre,
             precio,
             stock,
-            talla_id: talla,
+            tallaId: talla,
             descripcion: descripcionCompleta,
             genero,
             categoriaNombre: categoria,
@@ -155,7 +155,7 @@ const AgregarProducto = () => {
         setNombre(producto.nombre ?? '');
         setPrecio(producto.precio ?? 0);
         setStock(producto.stock ?? 0);
-        setTalla(producto.talla_id ?? '');
+        setTalla(producto.tallaId ?? '');
         setDescripcionCompleta(producto.descripcion ?? '');
         setGenero(producto.genero ?? '');
         setCategoria(producto.categoriaNombre ?? '');
@@ -244,7 +244,7 @@ const AgregarProducto = () => {
                             <td className="p-2">{p.nombre}</td>
                             <td className="p-2">${p.precio}</td>
                             <td className="p-2">{p.stock}</td>
-                            <td className="p-2">{p.talla_id}</td>
+                            <td className="p-2">{p.tallaId}</td>
                             <td className="p-2 max-w-[200px]">
                                 <div className="max-h-[80px] overflow-y-auto break-words whitespace-pre-line">{p.descripcion}</div>
                             </td>

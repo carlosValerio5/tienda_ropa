@@ -5,7 +5,7 @@ interface Producto {
     nombre: string;
     precio: number;
     stock: number;
-    talla_id?: string;
+    tallaId?: string;
     color_id?: string;
     marcaNombre?: string;
 }
@@ -32,7 +32,7 @@ const BuscarProducto = () => {
             });
 
             // Llamada al servidor Backend
-            const response = await fetch(`http://localhost:8080/api/v1/productos?${queryParams.toString()}`);
+            const response = await fetch(`http://localhost:8080/api/v1/productos/filters?${queryParams.toString()}`);
             if (!response.ok) {
                 throw new Error("Error al cargar los productos.");
             }
@@ -138,7 +138,7 @@ const BuscarProducto = () => {
                                 <td className="p-4 text-gray-700">{p.nombre}</td>
                                 <td className="p-4 text-gray-700">${p.precio}</td>
                                 <td className="p-4 text-gray-700">{p.stock}</td>
-                                <td className="p-4 text-gray-700">{p.talla_id || "N/A"}</td>
+                                <td className="p-4 text-gray-700">{p.tallaId || "N/A"}</td>
                                 <td className="p-4 text-gray-700">{p.color_id || "N/A"}</td>
                                 <td className="p-4 text-gray-700">{p.marcaNombre || "N/A"}</td>
                             </tr>
