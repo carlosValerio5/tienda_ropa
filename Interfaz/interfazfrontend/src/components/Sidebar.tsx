@@ -32,7 +32,7 @@ const Sidebar = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link to=" /productos/Index" className="block hover:text-yellow-300">
+                                <Link to="/productos/Index" className="block hover:text-yellow-300">
                                     🏷️ Buscar Productos
                                 </Link>
                             </li>

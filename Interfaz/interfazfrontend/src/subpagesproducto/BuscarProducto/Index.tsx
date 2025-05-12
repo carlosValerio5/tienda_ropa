@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
 interface Producto {
-    id: number;
+    productoId: number;
     nombre: string;
     precio: number;
     stock: number;
-    talla?: string;
-    color?: string;
-    marca?: string;
+    talla_id?: string;
+    color_id?: string;
+    marcaNombre?: string;
 }
 
 const BuscarProducto = () => {
@@ -32,7 +32,7 @@ const BuscarProducto = () => {
             });
 
             // Llamada al servidor Backend
-            const response = await fetch(`/api/productos?${queryParams.toString()}`);
+            const response = await fetch(`http://localhost:8080/api/v1/productos?${queryParams.toString()}`);
             if (!response.ok) {
                 throw new Error("Error al cargar los productos.");
             }
@@ -134,13 +134,13 @@ const BuscarProducto = () => {
                         </thead>
                         <tbody>
                         {productos.map((p) => (
-                            <tr key={p.id} className="border-t bg-white hover:bg-gray-100">
+                            <tr key={p.productoId} className="border-t bg-white hover:bg-gray-100">
                                 <td className="p-4 text-gray-700">{p.nombre}</td>
                                 <td className="p-4 text-gray-700">${p.precio}</td>
                                 <td className="p-4 text-gray-700">{p.stock}</td>
-                                <td className="p-4 text-gray-700">{p.talla || "N/A"}</td>
-                                <td className="p-4 text-gray-700">{p.color || "N/A"}</td>
-                                <td className="p-4 text-gray-700">{p.marca || "N/A"}</td>
+                                <td className="p-4 text-gray-700">{p.talla_id || "N/A"}</td>
+                                <td className="p-4 text-gray-700">{p.color_id || "N/A"}</td>
+                                <td className="p-4 text-gray-700">{p.marcaNombre || "N/A"}</td>
                             </tr>
                         ))}
                         </tbody>
