@@ -13,7 +13,7 @@ public class ProductosMapper implements Function<ProductosDTO, Productos> {
         productos.setNombre(productosDTO.nombre());
         productos.setPrecio(productosDTO.precio());
         productos.setDescripcion(productosDTO.descripcion());
-        productos.setTalla_id(productosDTO.talla_id());
+        productos.setTallaId(productosDTO.talla_id());
         productos.setColor_id(productosDTO.color_id());
         productos.setStock(productosDTO.stock());
         productos.setGenero(productosDTO.genero());

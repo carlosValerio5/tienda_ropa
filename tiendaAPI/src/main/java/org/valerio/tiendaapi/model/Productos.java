@@ -12,7 +12,7 @@ public class Productos {
     private String nombre;
     private String descripcion;
     private Double precio;
-    private String talla_id;
+    private String tallaId;
     private String color_id;
     private Long stock;
     private String genero;
@@ -34,13 +34,13 @@ public class Productos {
     public Productos() {
     }
 
-    public Productos(Integer productoId, String nombre, String descripcion, Double precio, String talla_id, String color_id,
+    public Productos(Integer productoId, String nombre, String descripcion, Double precio, String tallaId, String color_id,
                      Long stock, String genero, Marcas marca, Categorias categorias, String categoriaNombre, String marcaNombre) {
         this.productoId = productoId;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.talla_id = talla_id;
+        this.tallaId = tallaId;
         this.color_id = color_id;
         this.stock = stock;
         this.genero = genero;
@@ -48,6 +48,16 @@ public class Productos {
         this.categorias = categorias;
         this.categoriaNombre = categoriaNombre;
         this.marcaNombre = marcaNombre;
+    }
+
+    @PostLoad
+    public void postLoad() {
+        if(marca != null) {
+            this.marcaNombre = marca.getNombre();
+        }
+        if(categorias != null) {
+            this.categoriaNombre = categorias.getNombre();
+        }
     }
 
     public String getCategoriaNombre() {
@@ -114,12 +124,12 @@ public class Productos {
         this.precio = precio;
     }
 
-    public String getTalla_id() {
-        return talla_id;
+    public String getTallaId() {
+        return tallaId;
     }
 
-    public void setTalla_id(String talla_id) {
-        this.talla_id = talla_id;
+    public void setTallaId(String talla_id) {
+        this.tallaId = talla_id;
     }
 
     public String getColor_id() {

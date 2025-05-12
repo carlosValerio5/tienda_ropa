@@ -15,8 +15,9 @@ import org.valerio.tiendaapi.service.CategoriasService;
 import org.valerio.tiendaapi.service.MarcasService;
 import org.valerio.tiendaapi.service.ProductosService;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -36,18 +37,28 @@ public class ProductosController {
     }
 
     @GetMapping
+    public List<Productos> getProductos() {
+        return productosService.getProductos();
+    }
+
+    //Mapping to apply filters
+    @GetMapping("/filters")
     public List<Productos> getProductos(
             @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) Integer id
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) String talla,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String marca
     ) {
-        if(id != null){
+
+        List<Productos> result = productosService.getProductos();
+
+        if(id != null) {
             //Este metodo retorna una sola instancia de Productos por lo que se debe convertir a singleton List
             return Collections.singletonList(productosService.getById(id));
-        }else if (nombre != null){
-            return productosService.getByName(nombre);
-        }else {
-            return productosService.getProductos();
         }
+
+        return productosService.getByParams(nombre, talla, color, marca);
     }
 
     /**

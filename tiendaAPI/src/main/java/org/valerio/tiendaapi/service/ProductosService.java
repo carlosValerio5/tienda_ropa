@@ -12,7 +12,9 @@ import org.valerio.tiendaapi.repository.MarcasRepository;
 import org.valerio.tiendaapi.repository.ProductosRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,11 +44,60 @@ public class ProductosService {
         return productos;
     }
 
+    public List<Productos> getByParams(String nombre, String talla, String color, String marca) {
+        List<Productos> productos =  productosRepository.findAll();
+        if(!nombre.isEmpty()) {
+            productos = productos.stream().filter(
+                    Objects::nonNull
+            ).filter(
+                    producto -> {
+                        String productoNombre = producto.getNombre();
+                        return !productoNombre.isEmpty() && productoNombre.toLowerCase().contains(nombre.toLowerCase());
+                    }
+            ).toList();
+        }
+        if(!talla.isEmpty()) {
+            productos = productos.stream().filter(
+                    Objects::nonNull
+            ).filter(
+                    producto -> {
+                        String tallaResult = producto.getTallaId();
+                        return tallaResult != null && tallaResult.toLowerCase().contains(talla.toLowerCase());
+                    }
+            ).toList();
+        }
+        if(!color.isEmpty()) {
+            productos = productos.stream().filter(
+                    Objects::nonNull
+            ).filter(
+                    producto -> {
+                        String colorResult = producto.getColor_id();
+                        return colorResult != null && colorResult.toLowerCase().contains(color.toLowerCase());
+                    }
+            ).toList();
+        }
+        if(!marca.isEmpty()) {
+            productos = productos.stream().filter(
+                    Objects::nonNull
+            ).filter(
+                    producto -> {
+                        Marcas marcaObj = producto.getMarca();
+                        return marcaObj != null && marcaObj.getNombre().toLowerCase().contains(marca.toLowerCase());
+                    }
+            ).toList();
+        }
+        return productos;
+    }
+
     public Productos getById(Integer id) {
         Optional<Productos> producto = productosRepository.findByProductoId(id);
 
         return producto.orElse(null);
 
+    }
+
+    public List<Productos> getByTalla(String talla){
+        return productosRepository.findByTallaIdIgnoreCase(talla);
     }
 
     public List<Productos> getByName(String name) {
