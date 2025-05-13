@@ -29,7 +29,8 @@ public class ClientesService {
 
     public List<Clientes> getClientesByName (String name){
         return clientesRepository.findAll().stream().filter(
-                cliente -> name.equals(cliente.getNombre()) || name.equals(cliente.getApellido())
+                cliente -> name.toLowerCase().contains(cliente.getNombre()) ||
+                        name.toLowerCase().contains(cliente.getApellido())
         ).collect(Collectors.toList());
     }
 
@@ -49,7 +50,7 @@ public class ClientesService {
     }
 
     public Clientes addCliente(Clientes cliente){
-        if(cliente.getFecha_registro() != null){
+        if(cliente.getFecha_registro() == null){
             cliente.setFecha_registro(LocalDate.now());
         }
         clientesRepository.save(cliente);
