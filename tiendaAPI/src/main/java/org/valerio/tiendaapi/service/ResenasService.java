@@ -103,4 +103,14 @@ public class ResenasService {
         return resenasRepository.save(resena.get());
 
     }
+
+    public Resenas deleteResena(Integer resenaId) throws ProductoNoEncontradoException{
+        Optional<Resenas> resena = resenasRepository.findById(resenaId);
+        if(resena.isEmpty()){
+            throw new ResenaNoEncontradaException("La resena no existe");
+        }
+
+        resenasRepository.delete(resena.get());
+        return resena.get();
+    }
 }

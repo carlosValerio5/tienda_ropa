@@ -64,4 +64,15 @@ public class ResenasController {
 
         return new ResponseEntity<>(resena, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{resenaId}")
+    public ResponseEntity<Resenas> deleteResenas(@PathVariable Integer resenaId){
+        Resenas resena;
+        try {
+            resena = resenasService.deleteResena(resenaId);
+        } catch (ProductoNoEncontradoException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(resena, HttpStatus.OK);
+    }
 }
