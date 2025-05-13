@@ -31,6 +31,7 @@ const GestionarResenas = () => {
     const [formError, setFormError] = useState<string | null>(null);
     const [editando, setEditando] = useState<number | null>(null);
     const [cargando, setCargando] = useState(false);
+    const [resenaId, setResenaId] = useState<number | null>(null);
 
     const API_URL = 'http://localhost:8080/api/v1/resenas';
 
@@ -127,9 +128,9 @@ const GestionarResenas = () => {
         setFormError(null);
 
         try {
-            const resenaActualizada = { producto_id: productoId, clienteId: clienteId, calificacion, comentario };
+            const resenaActualizada = { resena_id: resenaId, producto_id: productoId, clienteId: clienteId, calificacion, comentario };
 
-            const response = await fetch(`${API_URL}/${editando}`, {
+            const response = await fetch(`${API_URL}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(resenaActualizada),
@@ -167,6 +168,7 @@ const GestionarResenas = () => {
     };
 
     const cargarEdicion = (resena: Resena) => {
+        setResenaId(resena.resena_id)
         setProductoId(resena.producto_id);
         setclienteId(resena.clienteId);
         setCalificacion(resena.calificacion);
@@ -175,6 +177,7 @@ const GestionarResenas = () => {
     };
 
     const limpiarFormulario = () => {
+        setResenaId(null);
         setProductoId('');
         setclienteId('');
         setCalificacion(5);

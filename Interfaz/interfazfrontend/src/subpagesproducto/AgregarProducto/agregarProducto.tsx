@@ -166,6 +166,7 @@ const AgregarProducto = () => {
     };
 
     const limpiarFormulario = () => {
+
         setNombre('');
         setPrecio(0);
         setStock(0);
