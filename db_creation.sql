@@ -170,6 +170,7 @@ DECLARE
     total_pedido DOUBLE PRECISION := 0;
     i INT := 1;
     precio_unit DOUBLE PRECISION;
+    new_stock BIGINT;
 BEGIN
     INSERT INTO pedidos(cliente_id, fecha_pedido, estado_pedido, total)
     VALUES (p_cliente_id, CURRENT_DATE, p_estado, 0)
@@ -178,8 +179,22 @@ BEGIN
     WHILE i <= array_length(p_productos, 1) LOOP
         SELECT precio INTO precio_unit FROM productos WHERE producto_id = p_productos[i];
 
+        SELECT stock FROM productos WHERE producto_id = p_productos[i] INTO new_stock;
+
+        IF new_stock<p_cantidades[i] THEN
+            i:=i+1;
+            CONTINUE;
+        end if;
+
         INSERT INTO detalles_pedido(pedido_id, producto_id, cantidad, precio_unitario)
         VALUES (new_pedido_id, p_productos[i], p_cantidades[i], precio_unit);
+
+
+        new_stock := new_stock - p_cantidades[i];
+
+        UPDATE productos
+            SET stock = new_stock
+        WHERE producto_id = p_productos[i];
 
         total_pedido := total_pedido + (precio_unit * p_cantidades[i]);
         i := i + 1;
@@ -188,3 +203,11 @@ BEGIN
     UPDATE pedidos SET total = total_pedido WHERE pedido_id = new_pedido_id;
 END;
 $$
+
+
+alter table public.detalles_pedido
+    drop constraint detalles_pedido_pedido_id_fkey;
+
+alter table public.detalles_pedido
+    add foreign key (pedido_id) references public.pedidos
+        on delete cascade;
