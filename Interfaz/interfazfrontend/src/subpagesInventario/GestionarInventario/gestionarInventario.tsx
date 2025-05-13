@@ -38,8 +38,8 @@ const VerInventario = () => {
 
     // Función para actualizar el stock en el backend
     const actualizarStock = (inventarioId: number, nuevaCantidad: number) => {
-        fetch(`/api/inventario/${inventarioId}`, {
-            method: "PUT",
+        fetch(`http://localhost:8080/api/v1/inventario/${inventarioId}`, {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
