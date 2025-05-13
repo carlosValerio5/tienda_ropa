@@ -108,6 +108,16 @@ public class ProductosService {
         if (productosRepository.findByProductoId(producto.getProductoId()).isPresent()) {
             throw new ProductoYaExisteException("Un producto con este id ya existe.");
         }
+        if(producto.getMarcaNombre()!=null) {
+            Optional<Marcas> marcaNueva = marcasRepository.findByNombre(producto.getMarcaNombre());
+            marcaNueva.ifPresent(producto::setMarca);
+        }
+
+        if(producto.getCategoriaNombre()!=null) {
+            Optional<Categorias> categoriaNueva = categoriasRepository.findByNombre(producto.getCategoriaNombre());
+            categoriaNueva.ifPresent(producto::setCategorias);
+        }
+
         return productosRepository.save(producto);
     }
 

@@ -111,6 +111,15 @@ public class ProductosController {
         return new ResponseEntity<>(resultado, HttpStatus.CREATED);
     }
 
+    @PostMapping("/add")
+    public ResponseEntity<Productos> addProducto(@RequestBody Productos productoRequest) {
+        Productos productoCreado = productosService.addProducto(productoRequest);
+        if (productoCreado == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(productoCreado, HttpStatus.CREATED);
+    }
+
     @PutMapping
     public ResponseEntity<Productos> updateProducto(@RequestBody Productos producto) {
 
