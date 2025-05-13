@@ -17,7 +17,7 @@ const BuscarCliente = () => {
     const [formError, setFormError] = useState<string | null>(null);
 
     // Cambia esta URL si tu backend tiene un prefijo diferente (ejemplo: '/api/v1/clientes')
-    const API_URL = '/api/clientes';
+    const API_URL = 'http://localhost:8080/api/v1/clientes';
 
     const buscarClientes = async () => {
         if (!criterio.trim()) {
@@ -29,7 +29,7 @@ const BuscarCliente = () => {
         setFormError(null);
 
         try {
-            const response = await fetch(`${API_URL}?search=${encodeURIComponent(criterio)}`);
+            const response = await fetch(`${API_URL}/search?search=${encodeURIComponent(criterio)}`);
             if (!response.ok) {
                 throw new Error('Error al buscar clientes.');
             }
@@ -40,6 +40,7 @@ const BuscarCliente = () => {
                 setFormError('No se encontraron clientes con el criterio indicado.');
             }
         } catch (e) {
+            console.error(e);
             setFormError('Ocurrió un error al realizar la búsqueda.');
         } finally {
             setCargando(false);
