@@ -30,6 +30,7 @@ function App() {
             <Route path="/clientes/buscar" element={<BuscarClientes />} />
             <Route path="/compras" element={<Compras />} />
             <Route path="/ventas" element={<Ventas />} />
+            <Route path="/resenias/mostrar" element={<GestionarResenas />}/>
           </Routes>
         </DashboardLayout>
       </Router>

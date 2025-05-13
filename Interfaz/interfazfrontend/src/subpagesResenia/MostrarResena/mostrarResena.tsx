@@ -3,26 +3,36 @@ import { useState, useEffect } from 'react';
 interface Resena {
     resena_id: number;
     producto_id: number;
-    cliente_id: number;
+    clienteId: number;
     calificacion: number;
     comentario: string;
     fecha: string;
+    producto: Producto | null;
+    cliente: Cliente | null;
+}
+
+interface Cliente {
+    clienteId: number;
+}
+
+interface Producto {
+    productoId: number;
 }
 
 const GestionarResenas = () => {
     const [resenas, setResenas] = useState<Resena[]>([]);
-    const [productos, setProductos] = useState<{ id: number; nombre: string }[]>([]); // Lista de productos
-    const [clientes, setClientes] = useState<{ id: number; nombre: string }[]>([]); // Lista de clientes
+    const [productos, setProductos] = useState<{ productoId: number; nombre: string }[]>([]); // Lista de productos
+    const [clientes, setClientes] = useState<{ clienteId: number; nombre: string }[]>([]); // Lista de clientes
 
     const [productoId, setProductoId] = useState<number | ''>('');
-    const [clienteId, setClienteId] = useState<number | ''>('');
+    const [clienteId, setclienteId] = useState<number | ''>('');
     const [calificacion, setCalificacion] = useState<number>(5);
     const [comentario, setComentario] = useState('');
     const [formError, setFormError] = useState<string | null>(null);
     const [editando, setEditando] = useState<number | null>(null);
     const [cargando, setCargando] = useState(false);
 
-    const API_URL = '/api/resenas';
+    const API_URL = 'http://localhost:8080/api/v1/resenas';
 
     const fetchResenas = async () => {
         try {
@@ -32,7 +42,14 @@ const GestionarResenas = () => {
                 throw new Error('Error al obtener las resenas.');
             }
             const data: Resena[] = await response.json();
-            setResenas(data);
+
+            const resenasDesc = data.map((item) => ({
+                ...item,
+                producto_id: item.producto?item.producto.productoId:0,
+                clienteId: item.cliente?item.cliente.clienteId:0,
+                })
+            )
+            setResenas(resenasDesc);
         } catch {
             setFormError('No se pudieron cargar las resenas.');
         } finally {
@@ -42,15 +59,18 @@ const GestionarResenas = () => {
 
     const fetchProductosYClientes = async () => {
         try {
-            const resProductos = await fetch('/api/productos');
-            const resClientes = await fetch('/api/clientes');
+            const resProductos = await fetch('http://localhost:8080/api/v1/productos');
+            const resClientes = await fetch('http://localhost:8080/api/v1/clientes');
 
             const productosData = await resProductos.json();
             const clientesData = await resClientes.json();
 
+
+
             setProductos(productosData);
             setClientes(clientesData);
-        } catch {
+        } catch (e){
+            console.error(e);
             setFormError('No se pudieron cargar productos o clientes.');
         }
     };
@@ -64,21 +84,26 @@ const GestionarResenas = () => {
         setFormError(null);
 
         try {
-            const nuevaResena = { producto_id: productoId, cliente_id: clienteId, calificacion, comentario };
+            const nuevaResena = { productoId: productoId, clienteId: clienteId, calificacion, comentario };
 
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${API_URL}/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(nuevaResena),
             });
+
+            console.log(nuevaResena);
+            console.log(response);
 
             if (!response.ok) {
                 throw new Error('Error al agregar la resena.');
             }
 
             const resenaCreada: Resena = await response.json();
+            console.log(resenaCreada)
             setResenas([...resenas, resenaCreada]);
             limpiarFormulario();
+            fetchResenas();
         } catch {
             setFormError('No se pudo agregar la resena.');
         } finally {
@@ -88,8 +113,13 @@ const GestionarResenas = () => {
 
     const editarResena = async () => {
         if (editando === null) return;
-        if (productoId === '' || clienteId === '' || calificacion < 1 || calificacion > 5 || !comentario.trim()) {
+        if (productoId === '' || clienteId === '' || !comentario.trim()) {
             setFormError('Todos los campos son obligatorios.');
+            return;
+        }
+
+        if (calificacion < 1 || calificacion > 5){
+            setFormError('La calificacion debe ser un numero entre 1 y 5');
             return;
         }
 
@@ -97,7 +127,7 @@ const GestionarResenas = () => {
         setFormError(null);
 
         try {
-            const resenaActualizada = { producto_id: productoId, cliente_id: clienteId, calificacion, comentario };
+            const resenaActualizada = { producto_id: productoId, clienteId: clienteId, calificacion, comentario };
 
             const response = await fetch(`${API_URL}/${editando}`, {
                 method: 'PUT',
@@ -138,7 +168,7 @@ const GestionarResenas = () => {
 
     const cargarEdicion = (resena: Resena) => {
         setProductoId(resena.producto_id);
-        setClienteId(resena.cliente_id);
+        setclienteId(resena.clienteId);
         setCalificacion(resena.calificacion);
         setComentario(resena.comentario);
         setEditando(resena.resena_id);
@@ -146,7 +176,7 @@ const GestionarResenas = () => {
 
     const limpiarFormulario = () => {
         setProductoId('');
-        setClienteId('');
+        setclienteId('');
         setCalificacion(5);
         setComentario('');
         setEditando(null);
@@ -170,16 +200,16 @@ const GestionarResenas = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <select value={productoId} onChange={(e) => setProductoId(Number(e.target.value))} className="border p-2 rounded">
                         <option value="">Selecciona un producto</option>
-                        {productos.map((p) => (
-                            <option key={p.id} value={p.id}>
+                        {productos.map((p, index) => (
+                            <option key={p.productoId} value={index}>
                                 {p.nombre}
                             </option>
                         ))}
                     </select>
-                    <select value={clienteId} onChange={(e) => setClienteId(Number(e.target.value))} className="border p-2 rounded">
+                    <select value={clienteId} onChange={(e) => setclienteId(Number(e.target.value))} className="border p-2 rounded">
                         <option value="">Selecciona un cliente</option>
-                        {clientes.map((c) => (
-                            <option key={c.id} value={c.id}>
+                        {clientes.map((c, index) => (
+                            <option key={index} value={c.clienteId}>
                                 {c.nombre}
                             </option>
                         ))}
@@ -229,10 +259,10 @@ const GestionarResenas = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {resenas.map((r) => (
-                        <tr key={r.resena_id} className="border-t">
-                            <td className="p-2">{productos.find((p) => p.id === r.producto_id)?.nombre || 'N/A'}</td>
-                            <td className="p-2">{clientes.find((c) => c.id === r.cliente_id)?.nombre || 'N/A'}</td>
+                    {resenas.map((r, index) => (
+                        <tr key={index} className="border-t">
+                            <td className="p-2">{productos.find((p) => p.productoId === r.producto_id)?.nombre || 'N/A'}</td>
+                            <td className="p-2">{clientes.find((c) => c.clienteId === r.clienteId)?.nombre || 'N/A'}</td>
                             <td className="p-2">{r.calificacion}</td>
                             <td className="p-2 max-w-[200px] truncate">{r.comentario}</td>
                             <td className="p-2">{r.fecha}</td>
