@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 
 interface Cliente {
     cliente_id: number;
@@ -7,7 +7,7 @@ interface Cliente {
     email: string;
     telefono: string;
     direccion: string;
-    fecha_registro: string;
+    fecha_registro: number;
 }
 
 const GestionarClientes = () => {
@@ -20,9 +20,11 @@ const GestionarClientes = () => {
     const [formError, setFormError] = useState<string | null>(null);
     const [editando, setEditando] = useState<number | null>(null);
     const [cargando, setCargando] = useState(false);
+    const [clienteId, setClienteId] = useState(0);
+
 
     // Cambia esta URL si tu backend está en una ruta diferente (ejemplo: 'http://localhost:5000/api/clientes')
-    const API_URL = '/api/clientes';
+    const API_URL = 'http://localhost:8080/api/v1/clientes';
 
     const fetchClientes = async () => {
         setCargando(true);
@@ -66,6 +68,7 @@ const GestionarClientes = () => {
             const clienteCreado: Cliente = await response.json();
             setClientes([...clientes, clienteCreado]);
             limpiarFormulario();
+            fetchClientes();
         } catch {
             setFormError('No se pudo agregar el cliente.');
         } finally {
@@ -76,7 +79,8 @@ const GestionarClientes = () => {
     const editarCliente = async () => {
         if (editando === null) return;
 
-        if (!nombre.trim() || !apellido.trim() || !email.trim() || !telefono.trim() || !direccion.trim()) {
+        if (clienteId == null || clienteId == 0 || !nombre.trim() || !apellido.trim() ||
+            !email.trim() || !telefono.trim() || !direccion.trim()) {
             setFormError('Todos los campos son obligatorios.');
             return;
         }
@@ -84,10 +88,13 @@ const GestionarClientes = () => {
         setCargando(true);
         setFormError(null);
 
-        const clienteActualizado = { nombre, apellido, email, telefono, direccion };
 
+        const clienteActualizado = { cliente_id:clienteId, nombre, apellido, email, telefono, direccion };
+
+
+        console.log(clienteActualizado);
         try {
-            const response = await fetch(`${API_URL}/${editando}`, {
+            const response = await fetch(`${API_URL}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(clienteActualizado),
@@ -116,7 +123,7 @@ const GestionarClientes = () => {
             if (!response.ok) {
                 throw new Error('Error al eliminar el cliente.');
             }
-            setClientes(clientes.filter((c) => c.cliente_id !== id));
+            fetchClientes();
         } catch {
             setFormError('No se pudo eliminar el cliente.');
         } finally {
@@ -125,6 +132,7 @@ const GestionarClientes = () => {
     };
 
     const cargarEdicion = (cliente: Cliente) => {
+        setClienteId(cliente.cliente_id)
         setNombre(cliente.nombre);
         setApellido(cliente.apellido);
         setEmail(cliente.email);
@@ -232,8 +240,8 @@ const GestionarClientes = () => {
                             <td className="p-2">{c.telefono}</td>
                             <td className="p-2">{c.direccion}</td>
                             <td className="p-2">{c.fecha_registro}</td>
-                            <td className="p-2">
-                                <button onClick={() => cargarEdicion(c)} className="bg-blue-500 text-white px-3 py-1 rounded">
+                            <td className="p-2 flex items-center justify-center">
+                                <button onClick={() => cargarEdicion(c)} className="bg-blue-500 text-white px-3 py-1 rounded ">
                                     Editar
                                 </button>
                                 <button onClick={() => eliminarCliente(c.cliente_id)} className="bg-red-500 text-white px-3 py-1 rounded">

@@ -265,7 +265,7 @@ const GestionarPedidos = () => {
                     <ul>
                         {pedidos.map((pedido) => (
                             <li key={pedido.pedidoId} className="flex justify-between items-center mb-2 border-b pb-2">
-                                Pedido #{pedido.pedidoId} - Cliente: {pedido.clienteNombre} - Total: ${pedido.total}
+                                Pedido #{pedido.pedidoId} - Cliente: {pedido.clienteNombre} - Total: ${pedido.total??0}
                                 <button
                                     onClick={() => cancelarPedido(pedido.pedidoId)}
                                     className="text-red-600 hover:underline"
