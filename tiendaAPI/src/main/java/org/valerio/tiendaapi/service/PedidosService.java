@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.valerio.tiendaapi.exceptions.ClienteNoExisteExeption;
 import org.valerio.tiendaapi.exceptions.PedidoNotFoundException;
+import org.valerio.tiendaapi.model.Clientes;
 import org.valerio.tiendaapi.model.DetallesPedido;
 import org.valerio.tiendaapi.model.Pedidos;
 import org.valerio.tiendaapi.model.Productos;
@@ -15,6 +16,8 @@ import org.valerio.tiendaapi.repository.ProductosRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidosService {
@@ -112,6 +115,33 @@ public class PedidosService {
         }
 
         pedidosRepository.delete(pedido);
+    }
+
+    public List<Pedidos> getPedidosByParams(String nombreCliente, String Estado){
+        List<Pedidos> pedidos = pedidosRepository.findAll();
+        if(nombreCliente != null){
+            pedidos = pedidos.stream().filter(
+                    Objects::nonNull
+            ).filter(
+                    pedidos1 -> {
+                        Clientes clienteResult = pedidos1.getCliente();
+                        return clienteResult != null && clienteResult.getNombre().toLowerCase()
+                                .contains(nombreCliente.toLowerCase());
+                    }
+            ).toList();
+        }
+        if(Estado != null){
+            pedidos = pedidos.stream().filter(
+                    Objects::nonNull
+            ).filter(
+                    pedidos1 -> {
+                        String estadoResult = pedidos1.getEstado_pedido();
+                        return estadoResult != null && estadoResult.toLowerCase()
+                                .contains(Estado.toLowerCase());
+                    }
+            ).toList();
+        }
+        return pedidos;
     }
 
 }

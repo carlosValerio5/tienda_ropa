@@ -59,6 +59,14 @@ public class Pedidos {
         this.cliente = cliente;
     }
 
+    public String getClienteNombre() {
+        return clienteNombre;
+    }
+
+    public void setClienteNombre(String clienteNombre) {
+        this.clienteNombre = clienteNombre;
+    }
+
     public List<DetallesPedido> getDetalles() {
         return detalles;
     }

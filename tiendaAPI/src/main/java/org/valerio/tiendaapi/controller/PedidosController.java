@@ -80,4 +80,12 @@ public class PedidosController {
         return pedidosService.getPedidos();
     }
 
+    @GetMapping("/params")
+    public List<Pedidos> getPedidos(
+            @RequestParam(required = false) String clienteNombre,
+            @RequestParam(required = false) String estado
+    ){
+        return pedidosService.getPedidosByParams(clienteNombre, estado);
+    }
+
 }
