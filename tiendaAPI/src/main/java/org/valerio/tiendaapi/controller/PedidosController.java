@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.valerio.tiendaapi.dto.PedidosDTO;
 import org.valerio.tiendaapi.exceptions.ClienteNoExisteExeption;
+import org.valerio.tiendaapi.exceptions.PedidoNotFoundException;
 import org.valerio.tiendaapi.model.DetallesPedido;
 import org.valerio.tiendaapi.model.Pedidos;
 import org.valerio.tiendaapi.service.PedidosService;
@@ -47,13 +48,23 @@ public class PedidosController {
 
      */
 
+    @DeleteMapping("/{pedidoId}")
+    public ResponseEntity<Pedidos> eliminarPedido(@PathVariable Integer pedidoId){
+        try{
+            pedidosService.eliminarPedido(pedidoId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (PedidoNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/detalles")
     public List<DetallesPedido> obtenerDetalles(@RequestParam(required = true) Integer pedidoId) {
         Pedidos pedido = new Pedidos(pedidoId);
         return pedidosService.obtenerDetallesPorPedido(pedido);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<String> crearPedidos(@RequestBody PedidosDTO pedido) {
         try {
             pedidosService.crearPedido(pedido.pClienteId(), pedido.pEstado(), pedido.pProductos(), pedido.pCantidades());

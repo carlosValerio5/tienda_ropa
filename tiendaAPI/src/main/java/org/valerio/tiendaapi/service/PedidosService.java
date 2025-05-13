@@ -4,6 +4,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.valerio.tiendaapi.exceptions.ClienteNoExisteExeption;
+import org.valerio.tiendaapi.exceptions.PedidoNotFoundException;
 import org.valerio.tiendaapi.model.DetallesPedido;
 import org.valerio.tiendaapi.model.Pedidos;
 import org.valerio.tiendaapi.model.Productos;
@@ -102,5 +103,15 @@ public class PedidosService {
         return pedidosRepository.findAll();
     }
 
+    public void eliminarPedido(Integer idPedido) throws PedidoNotFoundException {
+
+        Pedidos pedido = pedidosRepository.getPedidosByPedidoId(idPedido);
+
+        if (pedido == null) {
+            throw new PedidoNotFoundException("Pedido no encontrado");
+        }
+
+        pedidosRepository.delete(pedido);
+    }
 
 }

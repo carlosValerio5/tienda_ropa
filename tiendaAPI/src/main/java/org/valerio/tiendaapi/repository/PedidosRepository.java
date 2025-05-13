@@ -19,4 +19,7 @@ public interface PedidosRepository extends JpaRepository<Pedidos, Integer> {
                      @Param("p_productos")Integer[] pProductos,
                      @Param("p_cantidades") Integer[] pCantidades);
 
+    Pedidos deleteByPedidoId(Integer id);
+
+    Pedidos getPedidosByPedidoId(Integer pedidoId);
 }
