@@ -10,7 +10,7 @@ public class Clientes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cliente_id;
+    private Integer clienteId;
     private String nombre;
     private String apellido;
     private String email;
@@ -40,12 +40,12 @@ public class Clientes {
         this.direccion = direccion;
     }
 
-    public Integer getCliente_id() {
-        return cliente_id;
+    public Integer getClienteId() {
+        return clienteId;
     }
 
-    public void setCliente_id(Integer cliente_id) {
-        this.cliente_id = cliente_id;
+    public void setClienteId(Integer cliente_id) {
+        this.clienteId = cliente_id;
     }
 
     public String getNombre() {

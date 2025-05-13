@@ -17,7 +17,6 @@ import org.valerio.tiendaapi.repository.ProductosRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class PedidosService {
@@ -42,7 +41,7 @@ public class PedidosService {
 
 
     public Pedidos crearPedido(Pedidos pedido)throws ClienteNoExisteExeption {
-        if (!clientesRepository.existsById(pedido.getCliente().getCliente_id())) {
+        if (!clientesRepository.existsById(pedido.getCliente().getClienteId())) {
             throw new ClienteNoExisteExeption("Cliente no existe");
         }
         double total = 0;

@@ -23,7 +23,7 @@ public class ClientesService {
 
     public List<Clientes> getClientesById(Integer id){
         return clientesRepository.findAll().stream().filter(
-                cliente -> id.equals(cliente.getCliente_id())
+                cliente -> id.equals(cliente.getClienteId())
         ).collect(Collectors.toList());
     }
 
@@ -35,7 +35,7 @@ public class ClientesService {
     }
 
     public Clientes updateCliente(Clientes cliente){
-        Clientes clienteToUpdate = clientesRepository.findById(cliente.getCliente_id()).orElse(null);
+        Clientes clienteToUpdate = clientesRepository.findById(cliente.getClienteId()).orElse(null);
 
         if(clienteToUpdate != null){
             clienteToUpdate.setNombre(cliente.getNombre());

@@ -61,7 +61,7 @@ public class ClientesController {
     @PutMapping
     public ResponseEntity<Clientes> updateClientes(@RequestBody Clientes cliente) {
 
-        if(cliente.getCliente_id() == null){
+        if(cliente.getClienteId() == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

@@ -13,4 +13,6 @@ public interface ClientesRepository extends JpaRepository<Clientes, Integer> {
     @Query(nativeQuery = true, value="SELECT get_cliente_nombre_completo(:clienteId)")
     public String getClienteNombreCompleto(@Param("clienteId") Integer clienteId);
 
+    Optional<Clientes> findByClienteId(Integer id);
+
 }

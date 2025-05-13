@@ -40,6 +40,14 @@ public class Resenas {
         this.cliente = cliente;
     }
 
+    public Resenas(Integer calificacion, String comentario, LocalDate fecha, Productos producto, Clientes cliente) {
+        this.calificacion = calificacion;
+        this.comentario = comentario;
+        this.fecha = fecha;
+        this.producto = producto;
+        this.cliente = cliente;
+    }
+
     public Integer getResena_id() {
         return resena_id;
     }
