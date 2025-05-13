@@ -39,7 +39,7 @@ interface DetallePedido {
 }
 
 interface Cliente {
-    cliente_id: number;
+    clienteId: number;
     nombre: string;
     apellido: number;
     email: string;
@@ -56,8 +56,8 @@ const GestionarPedidos = () => {
     const getCliente = async (name: string) => {
         try{
             const cliente = await fetch(`http://localhost:8080/api/v1/clientes?name=${name}`);
-            console.log(cliente);
-            return await cliente.json() as Cliente;
+            const data = cliente.json();
+            return data;
         }catch(error){
             console.log(error);
         }
@@ -133,17 +133,20 @@ const GestionarPedidos = () => {
 
         console.log(clienteNombre);
 
-        const cliente: Cliente | undefined = (await getCliente(clienteNombre))[0];
+
+        const cliente: Cliente = (await getCliente(clienteNombre))[0];
+
+        console.log(cliente);
 
         if (!cliente) return;
 
-        console.log(cliente);//here it is defined
+        console.log(cliente.nombre);//here it is defined
 
         const cantidad : number[] = carrito.map((item) => item.cantidad);
         const productos: number[] = carrito.map((item) => item.producto_id);
 
         const nuevoPedido: PedidoDTO= {
-            pClienteId: Number(cliente.cliente_id),
+            pClienteId: Number(cliente.clienteId),
             pEstado: "Pendiente",
             /*
             cliente_nombre: clienteNombre,
@@ -171,6 +174,7 @@ const GestionarPedidos = () => {
                 if (!res.ok) {
                     throw new Error("Error al realizar el pedido.");
                 }
+                console.log(res);
 
             })
             .then(() => {
