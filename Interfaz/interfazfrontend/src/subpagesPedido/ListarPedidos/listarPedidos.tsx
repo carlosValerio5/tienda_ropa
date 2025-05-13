@@ -1,11 +1,21 @@
 import { useState } from "react";
 
 interface Pedido {
-    pedido_id: number;
+    pedidoId: number;
     cliente_nombre: string;
     fecha_pedido: string; // Fecha en formato ISO
     estado_pedido: string; // Ejemplo: Pendiente, Completado, Cancelado
     total: number;
+    cliente: Cliente;
+}
+
+interface Cliente {
+    cliente_id: number;
+    nombre: string;
+    apellido: string;
+    email: string;
+    telefono: string;
+    direccion: string;
 }
 
 const BuscarPedidos = () => {
@@ -22,7 +32,9 @@ const BuscarPedidos = () => {
 
         setCargando(true);
 
-        fetch(`/api/pedidos?busqueda=${busqueda}&estado=${estadoFiltro}`) // Reemplazar con la URL del backend
+        console.log(estadoFiltro);
+
+        fetch(`http://localhost:8080/api/v1/pedidos/params?clienteNombre=${busqueda}&estado=${estadoFiltro}`) // Reemplazar con la URL del backend
             .then((res) => {
                 if (!res.ok) {
                     throw new Error("Error al buscar pedidos.");
@@ -30,7 +42,11 @@ const BuscarPedidos = () => {
                 return res.json();
             })
             .then((data) => {
-                setPedidos(data); // Asignar los pedidos obtenidos desde el backend
+                const updatedPedidos: Pedido[] = data.map(item =>({
+                    ...item,
+                    cliente_nombre: item.cliente?.nombre||null,
+                }));
+                setPedidos(updatedPedidos); // Asignar los pedidos obtenidos desde el backend
                 setCargando(false);
             })
             .catch((err) => {
@@ -50,7 +66,7 @@ const BuscarPedidos = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <input
                         type="text"
-                        placeholder="Buscar por Cliente o ID"
+                        placeholder="Buscar por nombre de Cliente"
                         value={busqueda}
                         onChange={(e) => setBusqueda(e.target.value)}
                         className="border p-2 rounded focus:ring-2 focus:ring-blue-400 outline-none"
@@ -91,14 +107,14 @@ const BuscarPedidos = () => {
                         </thead>
                         <tbody>
                         {pedidos.map((pedido) => (
-                            <tr key={pedido.pedido_id} className="border-t bg-white hover:bg-gray-100">
-                                <td className="p-4 text-gray-700">{pedido.pedido_id}</td>
+                            <tr key={pedido.pedidoId} className="border-t bg-white hover:bg-gray-100">
+                                <td className="p-4 text-gray-700">{pedido.pedidoId}</td>
                                 <td className="p-4 text-gray-700">{pedido.cliente_nombre}</td>
                                 <td className="p-4 text-gray-700">
                                     {new Date(pedido.fecha_pedido).toLocaleDateString()}
                                 </td>
                                 <td className="p-4 text-gray-700">{pedido.estado_pedido}</td>
-                                <td className="p-4 text-gray-700">${pedido.total.toFixed(2)}</td>
+                                <td className="p-4 text-gray-700">${pedido.total?pedido.total.toFixed(2):0}</td>
                             </tr>
                         ))}
                         </tbody>
