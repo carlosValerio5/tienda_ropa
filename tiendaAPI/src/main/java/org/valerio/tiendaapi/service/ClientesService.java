@@ -29,8 +29,8 @@ public class ClientesService {
 
     public List<Clientes> getClientesByName (String name){
         return clientesRepository.findAll().stream().filter(
-                cliente -> name.toLowerCase().contains(cliente.getNombre()) ||
-                        name.toLowerCase().contains(cliente.getApellido())
+                cliente -> name.toLowerCase().contains(cliente.getNombre().toLowerCase()) ||
+                        name.toLowerCase().contains(cliente.getApellido().toLowerCase())
         ).collect(Collectors.toList());
     }
 
