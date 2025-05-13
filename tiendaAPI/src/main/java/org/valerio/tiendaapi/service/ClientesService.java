@@ -65,4 +65,24 @@ public class ClientesService {
         return clienteToDelete;
     }
 
+    public List<Clientes> getClientesBySearch(String search){
+        List<Clientes> resultado;
+        resultado = clientesRepository.findAll().stream().filter(
+                clientes -> clientes.getNombre().toLowerCase().contains(search.toLowerCase())
+        ).toList();
+
+        if(!resultado.isEmpty()) return resultado;
+        resultado = clientesRepository.findAll().stream().filter(
+                clientes -> clientes.getApellido().toLowerCase().contains(search.toLowerCase())
+        ).toList();
+
+        if(!resultado.isEmpty()) return resultado;
+        resultado = clientesRepository.findAll().stream().filter(
+                clientes -> clientes.getEmail().toLowerCase().contains(search.toLowerCase())
+        ).toList();
+        if(!resultado.isEmpty()) return resultado;
+
+        return resultado;
+    }
+
 }

@@ -20,6 +20,11 @@ public class ClientesController {
         this.clientesService = clientesService;
     }
 
+    @GetMapping("/search")
+    public List<Clientes> search(@RequestParam String search) {
+        return clientesService.getClientesBySearch(search);
+    }
+
     @GetMapping
     public List<Clientes> getClientes(
             @RequestParam(required = false) Integer id,
