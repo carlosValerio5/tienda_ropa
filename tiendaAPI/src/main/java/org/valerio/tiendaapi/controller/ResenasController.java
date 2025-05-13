@@ -9,6 +9,7 @@ import org.valerio.tiendaapi.dto.ResenaDTO;
 import org.valerio.tiendaapi.exceptions.CalificacionNoPermitidaExeption;
 import org.valerio.tiendaapi.exceptions.ClienteNoExisteExeption;
 import org.valerio.tiendaapi.exceptions.ProductoNoEncontradoException;
+import org.valerio.tiendaapi.exceptions.ResenaNoEncontradaException;
 import org.valerio.tiendaapi.model.Resenas;
 import org.valerio.tiendaapi.service.ResenasService;
 
@@ -48,5 +49,19 @@ public class ResenasController {
     @GetMapping
     public List<Resenas> getResenas() {
         return resenasService.getResenas();
+    }
+
+    @PutMapping
+    public ResponseEntity<Resenas> updateResenas(@RequestBody ResenaDTO resenaDTO){
+        Resenas resena;
+        try{
+            resena = resenasService.updateResenas(resenaDTO);
+        }catch (ClienteNoExisteExeption | ProductoNoEncontradoException e){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (ResenaNoEncontradaException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(resena, HttpStatus.OK);
     }
 }

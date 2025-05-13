@@ -7,6 +7,7 @@ import org.valerio.tiendaapi.dto.ResenaDTO;
 import org.valerio.tiendaapi.exceptions.CalificacionNoPermitidaExeption;
 import org.valerio.tiendaapi.exceptions.ClienteNoExisteExeption;
 import org.valerio.tiendaapi.exceptions.ProductoNoEncontradoException;
+import org.valerio.tiendaapi.exceptions.ResenaNoEncontradaException;
 import org.valerio.tiendaapi.model.Clientes;
 import org.valerio.tiendaapi.model.Productos;
 import org.valerio.tiendaapi.model.Resenas;
@@ -64,5 +65,42 @@ public class ResenasService {
                 producto.get(), cliente.get());
 
         return resenasRepository.save(resena);
+    }
+
+    public Resenas updateResenas(ResenaDTO resenaDTO) throws ProductoNoEncontradoException, ClienteNoExisteExeption, ResenaNoEncontradaException {
+
+        Optional<Resenas> resena = resenasRepository.findById(resenaDTO.resenaId());
+
+        if(resena.isEmpty()){
+            throw new ResenaNoEncontradaException("La resena no existe");
+        }
+
+        Optional<Productos> producto = productosRepository.findByProductoId(resenaDTO.productoId());
+        if(producto.isEmpty()&&resenaDTO.productoId()!=null){
+            throw new ProductoNoEncontradoException("No se encontro el producto");
+        }
+        Optional<Clientes> cliente = clientesRepository.findByClienteId(resenaDTO.clienteId());
+        if(cliente.isEmpty()&&resenaDTO.clienteId()!=null){
+            throw new ClienteNoExisteExeption("No se encontro el cliente");
+        }
+
+        if(resenaDTO.comentario()!=null){
+            resena.get().setComentario(resenaDTO.comentario());
+        }
+
+        if(resenaDTO.calificacion()!=null){
+            resena.get().setCalificacion(resenaDTO.calificacion());
+        }
+
+        if(resenaDTO.productoId()!=null){
+            resena.get().setProducto(producto.get());
+        }
+
+        if(resenaDTO.clienteId()!=null){
+            resena.get().setCliente(cliente.get());
+        }
+
+        return resenasRepository.save(resena.get());
+
     }
 }
