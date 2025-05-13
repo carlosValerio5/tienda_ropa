@@ -184,7 +184,7 @@ const GestionarPedidos = () => {
 
     // Cancelar un pedido, enviando la solicitud al backend
     const cancelarPedido = (pedido_id: number) => {
-        fetch(`/api/pedidos/${pedido_id}`, {
+        fetch(`http://localhost:8080/api/v1/pedidos/${pedido_id}`, {
             method: "DELETE",
         })
             .then((res) => {
@@ -222,8 +222,8 @@ const GestionarPedidos = () => {
                         <div key={producto.productoId} className="border p-4 rounded shadow hover:shadow-lg bg-gray-50">
                             <h3 className="text-lg font-semibold mb-2">{producto.nombre}</h3>
                             <p className="text-sm text-gray-600 mb-2">{producto.descripcion}</p>
-                            <p className="font-semibold text-gray-800 mb-2">Precio: ${producto.precio}</p>
-                            <p className="text-sm text-gray-700 mb-4">Stock Disponible: {producto.stock}</p>
+                            <p className="font-semibold text-gray-800 mb-2">Precio: ${producto.precio??0}</p>
+                            <p className="text-sm text-gray-700 mb-4">Stock Disponible: {producto.stock??0}</p>
                             <button
                                 onClick={() => agregarProductoACarrito(producto, 1)}
                                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
