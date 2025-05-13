@@ -211,3 +211,10 @@ alter table public.detalles_pedido
 alter table public.detalles_pedido
     add foreign key (pedido_id) references public.pedidos
         on delete cascade;
+
+alter table public.pedidos
+    drop constraint pedidos_cliente_id_fkey;
+
+alter table public.pedidos
+    add foreign key (cliente_id) references public.clientes
+        on delete cascade;
