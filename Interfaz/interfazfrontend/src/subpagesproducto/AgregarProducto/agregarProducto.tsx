@@ -82,6 +82,7 @@ const AgregarProducto = () => {
             const productoCreado: Producto = await response.json();
             setProductos([...productos, productoCreado]);
             limpiarFormulario();
+            fetchProductos();
         } catch {
             setError('No se pudo agregar el producto.');
         } finally {

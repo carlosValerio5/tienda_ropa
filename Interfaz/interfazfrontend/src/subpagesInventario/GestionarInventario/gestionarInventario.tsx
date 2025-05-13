@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 interface Inventario {
-    inventario_id: number;
+    inventarioId: number;
     producto_id: number;
     cantidad: number;
     fecha_actualizacion: string; // Fecha en formato ISO
@@ -18,7 +18,7 @@ const VerInventario = () => {
 
     // Cargar datos del inventario desde el backend
     useEffect(() => {
-        fetch("/api/inventario") // Cambiar por el endpoint correcto
+        fetch("http://localhost:8080/api/v1/inventario") // Cambiar por el endpoint correcto
             .then((res) => {
                 if (!res.ok) {
                     throw new Error("Error al cargar el inventario.");
@@ -39,7 +39,7 @@ const VerInventario = () => {
     // Función para actualizar el stock en el backend
     const actualizarStock = (inventarioId: number, nuevaCantidad: number) => {
         fetch(`/api/inventario/${inventarioId}`, {
-            method: "PATCH", // Usamos PATCH para actualizar parcialmente
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -55,7 +55,7 @@ const VerInventario = () => {
                 // Actualizar el estado del inventario sin recargar
                 setInventario((prevInventario) =>
                     prevInventario.map((item) =>
-                        item.inventario_id === inventarioId
+                        item.inventarioId === inventarioId
                             ? { ...item, cantidad: data.cantidad, fecha_actualizacion: data.fecha_actualizacion }
                             : item
                     )
@@ -104,8 +104,8 @@ const VerInventario = () => {
                         </thead>
                         <tbody>
                         {inventario.map((item) => (
-                            <tr key={item.inventario_id} className="border-t bg-white hover:bg-gray-100">
-                                <td className="p-4 text-gray-700">{item.inventario_id}</td>
+                            <tr key={item.inventarioId} className="border-t bg-white hover:bg-gray-100">
+                                <td className="p-4 text-gray-700">{item.inventarioId}</td>
                                 <td className="p-4 text-gray-700">{item.producto_id}</td>
                                 <td className="p-4 text-gray-700">{item.producto.nombre}</td>
                                 <td className="p-4 text-gray-700">{item.producto.descripcion}</td>
@@ -115,13 +115,13 @@ const VerInventario = () => {
                                 </td>
                                 <td className="p-4 text-gray-700 flex items-center gap-4">
                                     <button
-                                        onClick={() => manejarActualizarCantidad(item.inventario_id, item.cantidad, "aumentar")}
+                                        onClick={() => manejarActualizarCantidad(item.inventarioId, item.cantidad, "aumentar")}
                                         className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-700"
                                     >
                                         +1
                                     </button>
                                     <button
-                                        onClick={() => manejarActualizarCantidad(item.inventario_id, item.cantidad, "reducir")}
+                                        onClick={() => manejarActualizarCantidad(item.inventarioId, item.cantidad, "reducir")}
                                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700"
                                     >
                                         -1
