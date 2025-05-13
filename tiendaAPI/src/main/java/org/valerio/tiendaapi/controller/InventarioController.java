@@ -3,6 +3,7 @@ package org.valerio.tiendaapi.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.valerio.tiendaapi.dto.InventarioDTO;
 import org.valerio.tiendaapi.exceptions.InventarioNoEncontradoException;
@@ -13,9 +14,10 @@ import org.valerio.tiendaapi.model.Productos;
 import org.valerio.tiendaapi.service.InventarioService;
 import org.valerio.tiendaapi.service.ProductosService;
 
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
 
+@CrossOrigin(origins="http://localhost:5173")
 @RestController
 @RequestMapping(path="api/v1/inventario")
 public class InventarioController {
@@ -101,5 +103,28 @@ public class InventarioController {
 
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Inventario> patchInventario(@PathVariable Integer id,
+                                                      @RequestBody Map<Object, Object> fields) {
+        Optional<Inventario> inventario = inventarioService.getById(id);
+        if(inventario.isPresent()) {
+            fields.forEach( (key, value) -> {
+                Field field = ReflectionUtils.findField(Inventario.class, (String) key);
+                if (field != null) {
+                    field.setAccessible(true);
+                    Object convertedValue = null;
+                    if(field.getType()==Long.class) {
+                        convertedValue= ((Number) value).longValue();
+                    }
+                    ReflectionUtils.setField(field, inventario.get(), (convertedValue==null)?value:convertedValue);
+                }
+            });
+            inventarioService.updateInventario(inventario.get());
+            return new ResponseEntity<>(inventario.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }
 
