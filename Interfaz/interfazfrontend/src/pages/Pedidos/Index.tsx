@@ -1,7 +1,11 @@
 import { useState } from 'react';
 
+interface DetallesPedido {
+
+}
+
 interface Pedidos {
-    id: number;
+    pedidoId: number;
     producto: string;
     cantidad: number;
     proveedor: string;

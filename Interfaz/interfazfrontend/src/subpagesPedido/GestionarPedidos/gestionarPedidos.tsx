@@ -1,21 +1,28 @@
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 
 interface Producto {
-    id: number;
+    productoId: number;
     nombre: string;
     precio: number;
     stock: number;
-    talla?: string;
-    descripcionCompleta: string;
+    tallaId?: string;
+    descripcion: string;
     genero: string;
-    categoria: string;
-    color?: string;
-    marca?: string;
+    categoriaNombre: string;
+    color_id?: string;
+    marcaNombre?: string;
+}
+
+interface PedidoDTO {
+    pClienteId: number;
+    pEstado: string;
+    pProductos: Array<number>;
+    pCantidades: Array<number>;
 }
 
 interface Pedido {
-    pedido_id: number;
-    cliente_nombre: string;
+    pedidoId: number;
+    clienteNombre: string;
     fecha_pedido: Date;
     estado_pedido: string;
     total: number;
@@ -31,19 +38,52 @@ interface DetallePedido {
     subtotal: number;
 }
 
+interface Cliente {
+    cliente_id: number;
+    nombre: string;
+    apellido: number;
+    email: string;
+    telefono: string;
+    direccion: string;
+}
+
 const GestionarPedidos = () => {
     const [productos, setProductos] = useState<Producto[]>([]);
     const [carrito, setCarrito] = useState<DetallePedido[]>([]);
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
     const [clienteNombre, setClienteNombre] = useState<string>("");
 
+    const getCliente = async (name: string) => {
+        try{
+            const cliente = await fetch(`http://localhost:8080/api/v1/clientes?name=${name}`);
+            console.log(cliente);
+            return await cliente.json() as Cliente;
+        }catch(error){
+            console.log(error);
+        }
+    }
+
+    const fetchPedidos = async () => {
+        try{
+            const result = await fetch("http://localhost:8080/api/v1/pedidos");
+            const data = await result.json()
+            setPedidos(data)
+        }catch (e){
+            console.log(e);
+        }
+    }
+
+    useEffect(()=>{
+        fetchPedidos();
+    }, [])
+
     // Cargar los productos desde el backend
     useEffect(() => {
-        fetch("/api/productos") // Cambiar la URL al endpoint real
+        fetch("http://localhost:8080/api/v1/productos") // Cambiar la URL al endpoint real
             .then((res) => res.json())
             .then((data) => setProductos(data))
             .catch((err) => console.error("Error al cargar productos:", err));
-    }, []);
+    }, [pedidos, carrito]);
 
     // Agregar productos al carrito
     const agregarProductoACarrito = (producto: Producto, cantidad: number) => {
@@ -51,11 +91,11 @@ const GestionarPedidos = () => {
             alert(`No hay suficiente stock para agregar ${producto.nombre}`);
             return;
         }
-        const productoExistente = carrito.find((item) => item.producto_id === producto.id);
+        const productoExistente = carrito.find((item) => item.producto_id === producto.productoId);
         if (productoExistente) {
             setCarrito(
                 carrito.map((item) =>
-                    item.producto_id === producto.id
+                    item.producto_id === producto.productoId
                         ? {
                             ...item,
                             cantidad: item.cantidad + cantidad,
@@ -70,7 +110,7 @@ const GestionarPedidos = () => {
                 {
                     detalle_id: Date.now(),
                     pedido_id: 0,
-                    producto_id: producto.id,
+                    producto_id: producto.productoId,
                     nombre: producto.nombre,
                     cantidad,
                     precio_unitario: producto.precio,
@@ -81,7 +121,7 @@ const GestionarPedidos = () => {
     };
 
     // Confirmar el pedido, enviándolo al backend
-    const confirmarPedido = () => {
+    const confirmarPedido = async () => {
         if (carrito.length === 0) {
             alert("El carrito está vacío.");
             return;
@@ -91,19 +131,38 @@ const GestionarPedidos = () => {
             return;
         }
 
-        const nuevoPedido = {
+        console.log(clienteNombre);
+
+        const cliente: Cliente | undefined = (await getCliente(clienteNombre))[0];
+
+        if (!cliente) return;
+
+        console.log(cliente);//here it is defined
+
+        const cantidad : number[] = carrito.map((item) => item.cantidad);
+        const productos: number[] = carrito.map((item) => item.producto_id);
+
+        const nuevoPedido: PedidoDTO= {
+            pClienteId: Number(cliente.cliente_id),
+            pEstado: "Pendiente",
+            /*
             cliente_nombre: clienteNombre,
             fecha_pedido: new Date(),
-            estado_pedido: "Pendiente",
+            estado_pedido: "Pendiente",*/
+            pCantidades: cantidad,
+            pProductos: productos,
+            /*
             total: carrito.reduce((acc, item) => acc + item.subtotal, 0),
             detalles: carrito.map((item) => ({
                 producto_id: item.producto_id,
                 cantidad: item.cantidad,
                 precio_unitario: item.precio_unitario,
-            })),
+            })),*/
         };
 
-        fetch("/api/pedidos", {
+        console.log(nuevoPedido.pClienteId); //here is not
+
+        fetch("http://localhost:8080/api/v1/pedidos", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(nuevoPedido),
@@ -112,10 +171,10 @@ const GestionarPedidos = () => {
                 if (!res.ok) {
                     throw new Error("Error al realizar el pedido.");
                 }
-                return res.json();
+
             })
-            .then((data) => {
-                setPedidos([...pedidos, data]);
+            .then(() => {
+                fetchPedidos();
                 setCarrito([]);
                 setClienteNombre("");
                 alert("Pedido confirmado exitosamente.");
@@ -132,7 +191,7 @@ const GestionarPedidos = () => {
                 if (!res.ok) {
                     throw new Error("Error al cancelar el pedido.");
                 }
-                setPedidos(pedidos.filter((pedido) => pedido.pedido_id !== pedido_id));
+                setPedidos(pedidos.filter((pedido) => pedido.pedidoId !== pedido_id));
                 alert("Pedido cancelado exitosamente.");
             })
             .catch((err) => console.error("Error al cancelar pedido:", err));
@@ -160,9 +219,9 @@ const GestionarPedidos = () => {
                 <h2 className="text-lg font-semibold mb-4">Productos Disponibles</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {productos.map((producto) => (
-                        <div key={producto.id} className="border p-4 rounded shadow hover:shadow-lg bg-gray-50">
+                        <div key={producto.productoId} className="border p-4 rounded shadow hover:shadow-lg bg-gray-50">
                             <h3 className="text-lg font-semibold mb-2">{producto.nombre}</h3>
-                            <p className="text-sm text-gray-600 mb-2">{producto.descripcionCompleta}</p>
+                            <p className="text-sm text-gray-600 mb-2">{producto.descripcion}</p>
                             <p className="font-semibold text-gray-800 mb-2">Precio: ${producto.precio}</p>
                             <p className="text-sm text-gray-700 mb-4">Stock Disponible: {producto.stock}</p>
                             <button
@@ -205,10 +264,10 @@ const GestionarPedidos = () => {
                 {pedidos.length > 0 ? (
                     <ul>
                         {pedidos.map((pedido) => (
-                            <li key={pedido.pedido_id} className="flex justify-between items-center mb-2 border-b pb-2">
-                                Pedido #{pedido.pedido_id} - Cliente: {pedido.cliente_nombre} - Total: ${pedido.total}
+                            <li key={pedido.pedidoId} className="flex justify-between items-center mb-2 border-b pb-2">
+                                Pedido #{pedido.pedidoId} - Cliente: {pedido.clienteNombre} - Total: ${pedido.total}
                                 <button
-                                    onClick={() => cancelarPedido(pedido.pedido_id)}
+                                    onClick={() => cancelarPedido(pedido.pedidoId)}
                                     className="text-red-600 hover:underline"
                                 >
                                     Cancelar
