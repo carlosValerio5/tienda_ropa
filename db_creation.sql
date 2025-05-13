@@ -70,16 +70,17 @@ CREATE TABLE inventario(
 );
 
 CREATE TABLE reseñas(
-    reseña_id SERIAL,
+    resena_id SERIAL,
     producto_id INT,
     cliente_id INT,
     calificacion INT,
     comentario TEXT,
     fecha DATE,
-    PRIMARY KEY (reseña_id),
+    PRIMARY KEY (resena_id),
     FOREIGN KEY (producto_id) REFERENCES productos(producto_id),
     FOREIGN KEY (cliente_id) REFERENCES clientes(cliente_id)
 );
+
 
 CREATE VIEW productos_detallados
 AS
@@ -202,7 +203,7 @@ BEGIN
 
     UPDATE pedidos SET total = total_pedido WHERE pedido_id = new_pedido_id;
 END;
-$$
+$$;
 
 
 alter table public.detalles_pedido
