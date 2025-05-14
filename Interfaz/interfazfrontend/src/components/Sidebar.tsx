@@ -67,7 +67,7 @@ const Sidebar = () => {
 
                 <div>
                     <button
-                        onClick={() => setInventario(!pedidosOpen)}
+                        onClick={() => setInventario(!inventarioOpen)}
                         className="w-full flex justify-between items-center hover:text-yellow-300"
                     >
                         <span>🧾 Inventario</span>
