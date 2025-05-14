@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 
 interface Inventario {
     inventarioId: number;
-    producto_id: number;
+    productoId: number;
     cantidad: number;
     fecha_actualizacion: string; // Fecha en formato ISO
     producto: {
         nombre: string;
         descripcion: string;
+        productoId: number;
     };
 }
 
@@ -26,7 +27,11 @@ const VerInventario = () => {
                 return res.json();
             })
             .then((data) => {
-                setInventario(data); // Asignar los datos del inventario
+                const nuevoInventario = data.map((item: { producto: { productoId: number; }; }) =>({
+                    ...item,
+                    productoId: item.producto.productoId,
+                }))
+                setInventario(nuevoInventario); // Asignar los datos del inventario
                 setCargando(false);
             })
             .catch((err) => {
@@ -106,7 +111,7 @@ const VerInventario = () => {
                         {inventario.map((item) => (
                             <tr key={item.inventarioId} className="border-t bg-white hover:bg-gray-100">
                                 <td className="p-4 text-gray-700">{item.inventarioId}</td>
-                                <td className="p-4 text-gray-700">{item.producto_id}</td>
+                                <td className="p-4 text-gray-700">{item.productoId}</td>
                                 <td className="p-4 text-gray-700">{item.producto.nombre}</td>
                                 <td className="p-4 text-gray-700">{item.producto.descripcion}</td>
                                 <td className="p-4 text-gray-700">{item.cantidad}</td>
